@@ -1,0 +1,115 @@
+# --- Source of Truth for Fedora DevOps Setup ---
+
+# DNF Packages
+dnf_packages:
+  - zsh
+  - kitty
+  - docker-ce
+  - docker-ce-cli
+  - containerd.io
+  - docker-buildx-plugin
+  - docker-compose-plugin
+  - code
+  - neovim
+  - k9s
+  - btop
+  - tldr
+  - fastfetch
+  - lazygit
+  - jq
+  - curl
+  - git
+  - zoxide
+  - ranger
+  - eza
+  - fzf
+  - bat
+  - fd-find
+  - procs
+  - atuin
+  - git-delta
+  - just
+  - gh
+  - duf
+  - postgresql
+  - sqlite
+  - pgcli
+  - litecli
+
+# Flatpak Packages
+flatpak_packages:
+  - com.discordapp.Discord
+  - com.slack.Slack
+  - md.obsidian.Obsidian
+  - io.dbeaver.DBeaverCommunity
+  - org.flameshot.Flameshot
+  - com.bitwarden.desktop
+  - org.videolan.VLC
+  - com.spotify.Client
+  - com.mattjakeman.ExtensionManager
+
+# Dotfiles to Link
+dotfiles_links:
+  - { src: ".bashrc", dest: ".bashrc" }
+  - { src: ".zshrc", dest: ".zshrc" }
+  - { src: "aliases.sh", dest: "aliases.sh" }
+  - { src: ".config/kitty/kitty.conf", dest: ".config/kitty/kitty.conf" }
+  - { src: ".config/nvim", dest: ".config/nvim" }
+  - { src: ".config/btop", dest: ".config/btop" }
+  - { src: "wallpapers/background.png", dest: "Pictures/background.png" }
+
+# GNOME Settings (dconf)
+gnome_settings:
+  - { path: "/org/gnome/desktop/wm/preferences/focus-mode", value: "'sloppy'" }
+  - { path: "/org/gnome/desktop/wm/preferences/auto-raise", value: "true" }
+  - { path: "/org/gnome/desktop/wm/preferences/auto-raise-delay", value: "500" }
+  - { path: "/org/gnome/desktop/interface/gtk-theme", value: "'Tokyo-Night-Dark-BL'" }
+  - { path: "/org/gnome/desktop/interface/icon-theme", value: "'Papirus-Dark'" }
+  - { path: "/org/gnome/desktop/interface/accent-color", value: "'blue'" }
+  - { path: "/org/gnome/desktop/background/picture-uri-dark", value: "'file:///home/jack/dotfiles/wallpapers/background.png'" }
+  - { path: "/org/gnome/desktop/wm/keybindings/move-to-monitor-left", value: "['<Super><Shift>Left']" }
+  - { path: "/org/gnome/desktop/wm/keybindings/move-to-monitor-right", value: "['<Super><Shift>Right']" }
+
+# VS Code Extensions
+vscode_extensions:
+  - github.copilot-chat
+  - github.vscode-pull-request-github
+  - ms-azuretools.vscode-containers
+  - ms-azuretools.vscode-docker
+  - ms-vscode-remote.remote-ssh
+  - ms-vscode-remote.remote-ssh-edit
+  - ms-vscode.remote-explorer
+  - vscodevim.vim
+
+# VS Code Profiles
+vscode_profiles:
+  - name: "VIEW-MODE"
+    extensions: ["avetis.tokyo-night", "pkief.material-icon-theme"]
+    theme: "Tokyo Night"
+  - name: 'Golang'
+    extensions: ['golang.Go', 'humao.rest-client', 'binaryify.onedark-pro']
+    theme: "One Dark Pro Darker"
+  - name: 'WebDev'
+    extensions: ['esbenp.prettier-vscode', 'dbaeumer.vscode-eslint', 'bradlc.vscode-tailwindcss', 'dsznajder.es7-react-js-snippets', 'catppuccin.catppuccin-vsc']
+    theme: "Catppuccin Mocha"
+  - name: 'Bash'
+    extensions: ['mads-hartmann.bash-ide-vscode', 'timonwong.shellcheck', 'dracula-theme.theme-dracula']
+    theme: "Dracula"
+  - name: 'GitOps'
+    extensions: ['ms-kubernetes-tools.vscode-kubernetes-tools', 'redhat.vscode-yaml', 'hashicorp.terraform', 'eamodio.gitlens', 'arcticicestudio.nord-visual-studio-code']
+    theme: "Nord"
+  - name: 'AI-Python'
+    extensions: ['ms-python.python', 'ms-python.vscode-pylance', 'ms-toolsai.jupyter', 'ms-toolsai.datawrangler', 'ms-python.black-formatter', 'njpwerner.autodocstring', 'usernamehw.errorlens', 'monokai.theme-monokai-pro-vscode']
+    theme: "Monokai Pro"
+
+# Neovim Extras (Plugins & Language Support)
+neovim_extras:
+  - "lazyvim.plugins.extras.lang.go"
+  - "lazyvim.plugins.extras.lang.python"
+  - "lazyvim.plugins.extras.lang.typescript"
+  - "lazyvim.plugins.extras.lang.json"
+  - "lazyvim.plugins.extras.lang.yaml"
+  - "lazyvim.plugins.extras.lang.docker"
+  - "lazyvim.plugins.extras.ui.mini-animate"
+  - "lazyvim.plugins.extras.ai.copilot"
+  - "lazyvim.plugins.extras.editor.leap"

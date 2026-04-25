@@ -1,0 +1,177 @@
+---
+- name: Automate Fedora DevOps Desktop
+  hosts: local
+  become: false
+  vars_files:
+    - vars/main.yml
+    - [ "vars/local.yml", "vars/local.yml.example" ]
+
+  tasks:
+    - name: Ensure NVIDIA drivers are installed (Optional)
+      become: true
+      dnf:
+        name:
+          - akmod-nvidia
+          - xorg-x11-drv-nvidia-cuda
+          - xorg-x11-drv-nvidia-libs.i686
+        state: present
+      when: install_nvidia | default(false)
+      tags: [dnf, sudo]
+    - name: Ensure DNF packages are installed
+      become: true
+      dnf:
+        name: "{{ dnf_packages }}"
+        state: present
+      tags: dnf
+
+    - name: Ensure Flatpak packages are installed
+      flatpak:
+        name: "{{ item }}"
+        state: present
+        remote: flathub
+      loop: "{{ flatpak_packages }}"
+
+    - name: Symlink dotfiles
+      file:
+        src: "{{ ansible_env.HOME }}/dotfiles/{{ item.src }}"
+        dest: "{{ ansible_env.HOME }}/{{ item.dest }}"
+        state: link
+        force: yes
+      loop: "{{ dotfiles_links }}"
+
+    - name: Apply GNOME settings (dconf)
+      dconf:
+        key: "{{ item.path }}"
+        value: "{{ item.value }}"
+      loop: "{{ gnome_settings }}"
+
+    - name: Ensure Docker group exists and user is member
+      become: true
+      user:
+        name: "{{ ansible_env.USER }}"
+        groups: docker
+        append: yes
+      tags: sudo
+
+    - name: Ensure VS Code extensions are installed
+      shell: "code --install-extension {{ item }} --force"
+      loop: "{{ vscode_extensions }}"
+      register: vscode_out
+      changed_when: "'is already installed' not in vscode_out.stdout"
+      tags: vscode
+
+    - name: Ensure Mise is installed (Custom Curl Example)
+      shell: |
+        if [ ! -f ~/.local/bin/mise ]; then
+          curl https://mise.jdx.dev/install.sh | sh
+        fi
+      args:
+        creates: ~/.local/bin/mise
+
+    - name: Ensure Lazydocker is installed
+      shell: |
+        if ! command -v lazydocker &> /dev/null; then
+          curl https://raw.githubusercontent.com/jesseduffield/lazydocker/master/scripts/install_update_linux.sh | bash
+        fi
+      args:
+        creates: ~/.local/bin/lazydocker
+
+    - name: Ensure Lazyjournal is installed
+      shell: |
+        if ! command -v lazyjournal &> /dev/null; then
+          curl -sSL https://raw.githubusercontent.com/Lifailon/lazyjournal/main/scripts/install.sh | bash
+        fi
+      args:
+        creates: ~/.local/bin/lazyjournal
+
+    - name: Configure Git to use Delta as pager
+      shell: |
+        git config --global core.pager "delta"
+        git config --global interactive.diffFilter "delta --color-only"
+        git config --global delta.navigate true
+        git config --global merge.conflictstyle zdiff3
+      changed_when: false
+
+    - name: Ensure Atuin is initialized in ZSH
+      lineinfile:
+        path: "{{ ansible_env.HOME }}/dotfiles/.zshrc"
+        line: 'eval "$(atuin init zsh --disable-up-arrow)"'
+        create: yes
+
+    - name: Configure Global Git User
+      shell: |
+        git config --global user.name "{{ git_user_name }}"
+        git config --global user.email "{{ git_user_email }}"
+      changed_when: false
+
+    - name: Ensure FZF keybindings are in ZSH
+      lineinfile:
+        path: "{{ ansible_env.HOME }}/dotfiles/.zshrc"
+        line: "source /usr/share/fzf/shell/key-bindings.zsh"
+        create: yes
+
+    - name: Ensure xh is installed (Modern Curl)
+      shell: |
+        if ! command -v xh &> /dev/null; then
+          curl -sfL https://raw.githubusercontent.com/ducaale/xh/master/install.sh | sh
+        fi
+      args:
+        creates: ~/.local/bin/xh
+
+    - name: Ensure dust is installed (Modern du)
+      shell: |
+        if ! command -v dust &> /dev/null; then
+          curl -sSfL https://raw.githubusercontent.com/bootandy/dust/master/install.sh | sh -s -- -d ~/.local/bin
+        fi
+      args:
+        creates: ~/.local/bin/dust
+
+    - name: Update GNOME Search Providers for VS Code projects
+      shell: ~/.local/bin/update-vscode-projects.sh
+      changed_when: false
+
+    - name: Ensure DuckDB is installed
+      shell: |
+        if ! command -v duckdb &> /dev/null; then
+          curl -L https://github.com/duckdb/duckdb/releases/latest/download/duckdb_cli-linux-amd64.zip -o /tmp/duckdb.zip
+          unzip -o /tmp/duckdb.zip -d ~/.local/bin
+          rm /tmp/duckdb.zip
+        fi
+      args:
+        creates: ~/.local/bin/duckdb
+
+    - name: Ensure usql is installed (Universal SQL CLI)
+      shell: |
+        if ! command -v usql &> /dev/null; then
+          go install github.com/xo/usql@latest
+        fi
+      environment:
+        PATH: "{{ ansible_env.PATH }}:{{ ansible_env.HOME }}/.local/share/mise/installs/go/latest/bin"
+      args:
+        creates: "{{ ansible_env.HOME }}/go/bin/usql"
+
+    - name: Ensure Lazysql is installed
+      shell: |
+        if ! command -v lazysql &> /dev/null; then
+          go install github.com/jorgerojas26/lazysql@latest
+        fi
+      environment:
+        PATH: "{{ ansible_env.PATH }}:{{ ansible_env.HOME }}/.local/share/mise/installs/go/latest/bin"
+      args:
+        creates: "{{ ansible_env.HOME }}/go/bin/lazysql"
+
+    - name: Ensure Neovim lang.lua exists for Extras
+      copy:
+        dest: "{{ ansible_env.HOME }}/dotfiles/.config/nvim/lua/plugins/lang.lua"
+        content: |
+          return {
+            {% for item in neovim_extras %}
+            { import = "{{ item }}" },
+            {% endfor %}
+          }
+      tags: nvim
+
+    - name: Update Mise runtimes
+      shell: "~/.local/bin/mise use -g node@latest python@latest go@latest rust@latest bun@latest pnpm@latest"
+      register: mise_out
+      changed_when: "'installed' in mise_out.stdout"

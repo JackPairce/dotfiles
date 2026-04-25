@@ -1,0 +1,8 @@
+# --- Local Machine Variables (NOT tracked by Git) ---
+
+# Git Identity
+git_user_name: "Your Name"
+git_user_email: "your@email.com"
+
+# Optional Features
+install_nvidia: true # Set to false for machines without an NVIDIA GPU

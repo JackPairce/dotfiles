@@ -1,0 +1,16 @@
+{
+    "workbench.sideBar.location": "right",
+    "workbench.colorTheme": "Tokyo-Night-Dark-BL",
+    "workbench.iconTheme": "material-icon-theme",
+    "editor.fontSize": 14,
+    "editor.fontFamily": "'JetBrains Mono', 'MesloLGS NF', monospace",
+    "editor.fontLigatures": true,
+    "terminal.integrated.fontFamily": "MesloLGS NF",
+    "go.importShortcut": "definition",
+    "gopls": {
+        "ui.navigation.importShortcut": "Definition"
+    },
+    "editor.semanticHighlighting.enabled": true
+    "go.alternateTools": { "go": "/home/jack/.local/share/mise/installs/go/1.26.2/bin/go" },
+    "go.goroot": "/home/jack/.local/share/mise/installs/go/1.26.2"
+}
