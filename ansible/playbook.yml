@@ -172,6 +172,6 @@
       tags: nvim
 
     - name: Update Mise runtimes
-      shell: "~/.local/bin/mise use -g node@latest python@latest go@latest rust@latest bun@latest pnpm@latest"
+      shell: "~/.local/bin/mise use -g node@latest python@latest go@latest rust@latest bun@latest pnpm@10"
       register: mise_out
       changed_when: "'installed' in mise_out.stdout"

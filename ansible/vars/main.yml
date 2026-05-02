@@ -69,6 +69,10 @@ gnome_settings:
   - { path: "/org/gnome/desktop/background/picture-uri-dark", value: "'file:///home/jack/dotfiles/wallpapers/background.png'" }
   - { path: "/org/gnome/desktop/wm/keybindings/move-to-monitor-left", value: "['<Super><Shift>Left']" }
   - { path: "/org/gnome/desktop/wm/keybindings/move-to-monitor-right", value: "['<Super><Shift>Right']" }
+  - { path: "/org/gnome/desktop/wm/keybindings/switch-applications", value: "['<Super>Tab']" }
+  - { path: "/org/gnome/desktop/wm/keybindings/switch-applications-backward", value: "['<Shift><Super>Tab']" }
+  - { path: "/org/gnome/desktop/wm/keybindings/switch-windows", value: "['<Alt>Tab']" }
+  - { path: "/org/gnome/desktop/wm/keybindings/switch-windows-backward", value: "['<Shift><Alt>Tab']" }
 
 # VS Code Extensions
 vscode_extensions:
